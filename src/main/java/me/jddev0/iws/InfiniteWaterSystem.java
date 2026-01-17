@@ -14,6 +14,7 @@ import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.math.vector.Vector2i;
 import com.hypixel.hytale.server.core.asset.type.blocktick.BlockTickStrategy;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.fluid.Fluid;
 import com.hypixel.hytale.server.core.asset.type.fluid.FluidTicker;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockChunk;
@@ -103,14 +104,19 @@ public class InfiniteWaterSystem extends EntityTickingSystem<ChunkStore> {
                                     }
 
                                     if(waterSourceCount >= 2) {
-                                        targetFluidSection.setFluid(blockX, y, blockZ, fluidId, (byte)fluid.getMaxFluidLevel());
-                                        targetBlockSection.setTicking(blockX, y, blockZ, true);
-                                        FluidTicker.setTickingSurrounding(accessor1, targetBlockSection, blockX, y, blockZ);
+                                        int blockId = targetBlockSection.get(blockX, y, blockZ);
+                                        if(FluidTicker.isFullySolid(BlockType.getAssetMap().getAsset(blockId))) {
+                                            fluidSection.setFluid(blockX, y, blockZ, 0, (byte)0);
+                                        }else {
+                                            targetFluidSection.setFluid(blockX, y, blockZ, fluidId, (byte)fluid.getMaxFluidLevel());
+                                            targetBlockSection.setTicking(blockX, y, blockZ, true);
+                                            FluidTicker.setTickingSurrounding(accessor1, targetBlockSection, blockX, y, blockZ);
+                                        }
                                     }
                                 }
                             }
 
-                            return BlockTickStrategy.IGNORED;
+                            return BlockTickStrategy.SLEEP;
                         }
 
                         return BlockTickStrategy.IGNORED;
