@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "me.jddev0"
-version = "0.1.0"
+version = "0.1.1-dev"
 val javaVersion = 25
 
 val appData = System.getenv("APPDATA") ?: (System.getenv("HOME") + "/.var/app/com.hypixel.HytaleLauncher/data")
